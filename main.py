@@ -275,17 +275,18 @@ class WorkCamera:
             thread.start_new_thread(self.process_frame, (i, ))
 
         while True:
-            for i in range(len(self.cap_list)):
-                if DISPLAY_DETECT_FRAME_ONLY:
-                    if self.ret_image[i] is not None:
-                        cv2.imshow('org' + str(i), self.ret_image[i])
-                else:
-                    if self.frame_list[i] is not None:
-                        img_org = self.draw_image(self.frame_list[i].copy(),
-                                                  rects=self.detect_rects_list[i],
-                                                  cam_ind=i,
-                                                  obj_ind=self.obj_ind_list[i])
-                        cv2.imshow('org' + str(i), img_org)
+            if SHOW_VIDEO:
+                for i in range(len(self.cap_list)):
+                    if DISPLAY_DETECT_FRAME_ONLY:
+                        if self.ret_image[i] is not None:
+                            cv2.imshow('org' + str(i), self.ret_image[i])
+                    else:
+                        if self.frame_list[i] is not None:
+                            img_org = self.draw_image(self.frame_list[i].copy(),
+                                                      rects=self.detect_rects_list[i],
+                                                      cam_ind=i,
+                                                      obj_ind=self.obj_ind_list[i])
+                            cv2.imshow('org' + str(i), img_org)
 
             key = cv2.waitKey(10)
             if key == ord('q'):
@@ -335,7 +336,9 @@ class WorkCamera:
             else:
                 img_ret = self.draw_image(frame, valid_rects, 0)
 
-            cv2.imshow('ret', img_ret)
+            if SHOW_VIDEO:
+                cv2.imshow('ret', img_ret)
+
             if SAVE_VIDEO:
                 self.video_writer_list[0].write(img_ret)
 
