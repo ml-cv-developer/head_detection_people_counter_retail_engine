@@ -46,6 +46,9 @@ class TfDetector:
         detect_class_list = []
 
         for i in range(len(scores[0])):
+            if scores[0][i] < 0.1:
+                continue
+
             x1, y1 = int(boxes[0][i][1] * frm_width), int(boxes[0][i][0] * frm_height)
             x2, y2 = int(boxes[0][i][3] * frm_width), int(boxes[0][i][2] * frm_height)
             detect_rect_list.append([x1, y1, x2, y2])
@@ -53,3 +56,15 @@ class TfDetector:
             detect_class_list.append(classes[0][i])
 
         return detect_rect_list, detect_score_list, detect_class_list
+
+
+if __name__ == '__main__':
+    img = cv2.imread('2.jpg')
+    class_tf = TfDetector()
+    rects, _, _ = class_tf.detect_from_images(img)
+    for i in range(len(rects)):
+        [x1, y1, x2, y2] = rects[i]
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+    cv2.imshow('e', img)
+    cv2.waitKey(0)

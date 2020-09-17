@@ -8,6 +8,7 @@ class Tracker:
     def __init__(self):
         self.items = {}
         self.total = 0
+        self.cnt = 0
 
     def __get_closest_pair(self, rect_list, cnt):
         """
@@ -118,23 +119,25 @@ class Tracker:
         self.items = {}
         self.total = 0
 
-    def update(self, cnt, rect_list, d_list):
+    def update(self, rect_list, d_list):
+        self.cnt += 1
+
         # ---------------- check the pair of the closest rects  ---------------
-        list_pair_update = self.__get_closest_pair(rect_list, cnt)
+        list_pair_update = self.__get_closest_pair(rect_list, self.cnt)
         total_in = 0
         total_out = 0
         # ---------------------- update/add new items -------------------------
         for i in range(len(rect_list)):
             if i in list_pair_update[0]:    # update
                 tracker_ind = list_pair_update[1][list_pair_update[0].index(i)]
-                cnt_in, cnt_out = self.__update_tracker(tracker_ind, cnt, rect_list[i], d_list[i])
+                cnt_in, cnt_out = self.__update_tracker(tracker_ind, self.cnt, rect_list[i], d_list[i])
                 total_in += cnt_in
                 total_out += cnt_out
             else:
                 self.total += 1
-                self.__add_tracker(cnt, rect_list[i], d_list[i])
+                self.__add_tracker(self.cnt, rect_list[i], d_list[i])
 
         # ------------------------ delete the old items -----------------------
-        self.items = self.__delete_tracker(cnt)
+        self.items = self.__delete_tracker(self.cnt)
 
         return total_in, total_out
